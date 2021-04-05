@@ -73,12 +73,11 @@ static esp_err_t mqtt_event_handler_cb(esp_mqtt_event_handle_t event)
             printf("TOPIC=%.*s\r\n", event->topic_len, event->topic);
 
             // Vulnerable to format string attack >:)
-            char buf[100];
+            char buf[500];
             event->data[event->data_len] = '\x00';
             printf("DATA=");
             snprintf(buf, sizeof(buf), event->data);
-            printf(buf);
-            // printf(event->data);
+            printf("%s", buf);
             printf("\r\n");
             break;
         case MQTT_EVENT_ERROR:
