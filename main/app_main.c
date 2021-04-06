@@ -76,8 +76,8 @@ static esp_err_t mqtt_event_handler_cb(esp_mqtt_event_handle_t event)
             char buf[500];
             event->data[event->data_len] = '\x00';
             printf("DATA=");
-            snprintf(buf, sizeof(buf), event->data);
-            printf("%s", buf);
+            snprintf(buf, sizeof(buf), "%s", event->data);
+            printf(buf);
             printf("\r\n");
             break;
         case MQTT_EVENT_ERROR:
