@@ -43,3 +43,17 @@ TODO
 ```
 
 ![Control flow hijack](images/mqtt_control_flow_hijack.JPG)
+
+## Code Injection
+
+```
+. mosquitto_pub.sh inject
+```
+
+Overwriting the return address:
+
+![Overwriting the return address](images/mqtt_code_injection_return_address.JPG)
+
+The injected code is not too interesting when we monitor the output. Instead we show the injected assembly code at the target address:
+
+![Code injection](images/mqtt_code_injection.JPG)
