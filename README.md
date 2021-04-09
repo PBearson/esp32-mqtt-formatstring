@@ -2,7 +2,7 @@
 
 ## Introduction
 
-TODO
+This example program uses MQTT and Mosquitto to perform a remote format string attack on ESP32. 
 
 ## Crashing the Program
 
