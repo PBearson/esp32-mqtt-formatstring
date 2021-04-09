@@ -42,6 +42,16 @@ TODO
 . mosquitto_pub.sh hijack
 ```
 
+Overwriting the return address:
+
+![Control flow hijack return address](images/mqtt_control_flow_hijack_return_address.JPG)
+
+This new address points to ___abort()___:
+
+![Control flow hijack abort](images/mqtt_control_flow_hijack_abort_disas.JPG)
+
+Performing the attack:
+
 ![Control flow hijack](images/mqtt_control_flow_hijack.JPG)
 
 ## Code Injection
